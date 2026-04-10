@@ -4,11 +4,12 @@ SRC_DIR = src
 INC_DIR = src/headers
 DIST_DIR = dist
 
-SRC = $(SRC_DIR)/main3.c \
-      $(SRC_DIR)/categorie.c \
-      $(SRC_DIR)/depense.c
+SRC = $(SRC_DIR)/main.c \
+      $(SRC_DIR)/affichage.c \
+      $(SRC_DIR)/partie.c\
+      $(SRC_DIR)/jeu.c
 
-TARGET = $(DIST_DIR)/budget.exe
+TARGET = $(DIST_DIR)/projet.exe
 
 all: 
 	mkdir -p $(DIST_DIR)
