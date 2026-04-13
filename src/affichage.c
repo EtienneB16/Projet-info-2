@@ -1,6 +1,6 @@
-#include <headers/lib.h>
-#include <headers/affichage.h>
-#include <headers/partie.h>
+#include "headers/lib.h"
+#include "headers/affichage.h"
+#include "headers/partie.h"
 
 void afficherMenu(){
     BITMAP* menu = initialisation_bg(0);

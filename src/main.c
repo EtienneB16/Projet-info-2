@@ -1,6 +1,6 @@
-#include <headers/lib.h>
-#include <headers/partie.h>
-#include <headers/affichage.h>
+#include "headers/lib.h"
+#include "headers/partie.h"
+#include "headers/affichage.h"
 
 int main() {
     initialisation_Allegro();
@@ -12,4 +12,4 @@ int main() {
     }
     allegro_exit();
     return 0;
-}
+}END_OF_MAIN();

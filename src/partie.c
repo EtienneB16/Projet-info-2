@@ -1,5 +1,5 @@
-#include <headers/lib.h>
-#include <headers/partie.h>
+#include "headers/lib.h"
+#include "headers/partie.h"
 
 void fermeture() {
     fermer = 1;
@@ -19,7 +19,7 @@ void initialisation_Allegro(){
 
 BITMAP* initialisation_bg(int i){
     char bg[40];
-    sprintf(bg, "backgrounds/bg_%d.bmp",i);
+    sprintf(bg, "src/backgrounds/bg_%d.bmp",i);
     BITMAP* p = load_bitmap(bg, NULL);
     if(!p) {
         allegro_message("impossible de charger %s", bg);
