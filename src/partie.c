@@ -18,7 +18,7 @@ void initialisation_Allegro(){
 }
 
 BITMAP* initialisation_bg(int i){
-    char bg[40];
+    char bg[255];
     sprintf(bg, "src/backgrounds/bg_%d.bmp",i);
     BITMAP* p = load_bitmap(bg, NULL);
     if(!p) {
