@@ -32,7 +32,7 @@ BITMAP* initialisation_bg(int i){
 void initialisation_yoda(BITMAP *img[NIMAGE]){
     for (int i=0;i<NIMAGE;i++){
         char yoda[40];
-        sprintf(yoda, "personnages/yoda/yoda_%d.bmp",i);
+        sprintf(yoda, "src/personnages/yoda/run_%d.bmp",i);
         img[i] = load_bitmap(yoda,NULL);
         if (!img[i]){
             allegro_message("pas pu trouver %s",yoda);

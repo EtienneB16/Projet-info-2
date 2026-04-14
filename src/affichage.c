@@ -2,8 +2,6 @@
 #include "headers/affichage.h"
 #include "headers/partie.h"
 
-void afficherMenu(){
-    BITMAP* menu = initialisation_bg(0);
+void afficherMenu(BITMAP* menu){
     stretch_blit(menu, screen, 0, 0, menu->w, menu->h, 0, 0, LARGEUR, HAUTEUR);
-    destroy_bitmap(menu);
 }

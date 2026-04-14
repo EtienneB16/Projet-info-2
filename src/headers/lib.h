@@ -3,7 +3,7 @@
 
 #define LARGEUR 800
 #define HAUTEUR 600
-#define NIMAGE 4
+#define NIMAGE 6
 
 #include <stdio.h>
 #include <stdlib.h>
