@@ -1,6 +1,6 @@
 #ifndef AFFICHAGE_H
 #define AFFICHAGE_H
 
-void afficherMenu();
+void afficher_menu();
 
 #endif
