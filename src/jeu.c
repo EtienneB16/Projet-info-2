@@ -127,7 +127,6 @@ void rebond(Vaisseau* vai) {
         vai->x    = (int)vai->x_f;
     }
 }
-
 /* CORRECTION : Vaisseau** pour pouvoir mettre a jour la tete si on supprime
    le premier noeud de la liste. */
 void division_vaisseau(Vaisseau** tete_vaisseau, Vaisseau* vai) {
@@ -288,3 +287,4 @@ void boucle_de_jeu(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
 
     if (bg != NULL) destroy_bitmap(bg);
 }
+

@@ -249,3 +249,4 @@ void charger_sauvegarde(int* niv, Niveau niveau[], Joueur* joueur) {
     fscanf(f, "%s %d\n", joueur->pseudo, &joueur->score);
     fclose(f);
 }
+
