@@ -1,22 +1,21 @@
 #ifndef JEU_H
 #define JEU_H
 
-Vaisseau* vaisseau_i(Vaisseau* tete_vaisseau, int i);
-int bord_touche(Vaisseau* tete_vaisseau, int i);
+int bord_touche(Vaisseau* vai);
 void deplacement_vaisseau(Vaisseau* tete_vaisseau);
 
 /* CORRECTION : Projectile** pour pouvoir supprimer les noeuds de la liste */
 void deplacement_projectile(Projectile** tete_projectile);
 
-/* CORRECTION : retourne le Projectile* touche (NULL si pas de collision)
+/* CORRECTION : retourne le projectile touche (NULL si pas de collision)
    pour pouvoir le supprimer immediatement apres la collision */
-int collision_projectile_vaisseau(Projectile* tete_projectile,
-                                           Vaisseau* tete_vaisseau, int i);
-int collision_yoda_vaisseau(Yoda yoda, Vaisseau* tete_vaisseau, int i);
-void rebond(Vaisseau* tete_vaisseau, int i);
+Projectile* collision_projectile_vaisseau(Projectile* tete_projectile,
+                                           Vaisseau* vai);
+int collision_yoda_vaisseau(Yoda yoda, Vaisseau* vai);
+void rebond(Vaisseau* vai);
 
 /* CORRECTION : Vaisseau** pour modifier la tete si on supprime le 1er noeud */
-void division_vaisseau(Vaisseau** tete_vaisseau, int i);
+void division_vaisseau(Vaisseau** tete_vaisseau, Vaisseau* vai);
 
 /* CORRECTION : Projectile** pour que le nouveau projectile soit visible depuis l'appelant */
 void tirer(Projectile** tete_projectile, Yoda yoda);

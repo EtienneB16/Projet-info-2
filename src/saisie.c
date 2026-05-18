@@ -39,7 +39,7 @@ int gestion_menu(BITMAP* bg, BITMAP* page) {
     return 0;
 }
 
-void gestion_menu_pause(int* niv, Niveau niveau[], Yoda yoda, Vador vador,
+void gestion_menu_pause(int* niv, Niveau niveau[], Joueur* joueur, Yoda yoda, Vador vador,
                      Vaisseau* tete_vaisseau, Projectile* tete_projectile,
                      BITMAP* page, BITMAP* bg,
                      BITMAP* img_yoda[], BITMAP* img_vador[],
@@ -48,7 +48,7 @@ void gestion_menu_pause(int* niv, Niveau niveau[], Yoda yoda, Vador vador,
     bg = charger_bg(4);
     int choix_menu = 0;
     while (!choix_menu) {
-        afficher_niveau(&niv, niveau, yoda, vador, tete_vaisseau, tete_projectile,
+        afficher_niveau(niv, niveau, yoda, vador, tete_vaisseau, tete_projectile,
                          page, bg, img_yoda, img_vador, img_vaisseau);
         afficher_menu_pause(page, bg);
         if (key[KEY_ESC]) {
@@ -60,7 +60,7 @@ void gestion_menu_pause(int* niv, Niveau niveau[], Yoda yoda, Vador vador,
                 choix_menu = 1; return;
             }
             if (mouse_x >= 200 && mouse_x <= 990 && mouse_y >= 295 && mouse_y <= 410) {
-                sauvegarde();
+                sauvegarde(niv, niveau, joueur);
             }
             if (mouse_x >= 200 && mouse_x <= 990 && mouse_y >= 390 && mouse_y <= 505) {
                 choix_menu = 1; fermer = 1; return;

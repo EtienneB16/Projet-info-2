@@ -19,8 +19,15 @@ void initialisation_partie(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda
                             Vador* vador, Vaisseau** tete_vaisseau,
                             Projectile** tete_projectile);
 
+void initialisation_niveau_suivant(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
+                                Vador* vador, Vaisseau** tete_vaisseau,
+                                Projectile** tete_projectile);
+
 void fin_de_partie(int* niv, Niveau niveau[], Joueur* joueur,
                    Vaisseau** tete_vaisseau, Projectile** tete_projectile,
                    BITMAP* page, BITMAP* bg);
+
+void sauvegarde(int* niv, Niveau niveau[], Joueur* joueur);
+void charger_sauvegarde(int* niv, Niveau niveau[], Joueur* joueur);
 
 #endif

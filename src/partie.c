@@ -3,7 +3,6 @@
 #include "headers/saisie.h"
 #include "headers/affichage.h"
 
-/* CORRECTION : definition unique de fermer (extern dans lib.h, defini ici) */
 volatile int fermer = 0;
 
 void fermeture() {
@@ -183,6 +182,7 @@ void initialisation_partie(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda
 void initialisation_niveau_suivant(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
                                 Vador* vador, Vaisseau** tete_vaisseau,
                                 Projectile** tete_projectile) {
+    (void)joueur;
     /* Reinitialiser les listes de vaisseaux et projectiles */
     liberer_vaisseau(*tete_vaisseau);
     *tete_vaisseau = NULL;
@@ -201,6 +201,7 @@ void initialisation_niveau_suivant(int* niv, Niveau niveau[], Joueur* joueur, Yo
 void fin_de_partie(int* niv, Niveau niveau[], Joueur* joueur,
                    Vaisseau** tete_vaisseau, Projectile** tete_projectile,
                    BITMAP* page, BITMAP* bg) {
+    (void)bg;
     liberer_vaisseau(*tete_vaisseau);
     *tete_vaisseau = NULL;
     liberer_projectile(*tete_projectile);

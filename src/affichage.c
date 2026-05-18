@@ -117,11 +117,18 @@ void afficher_fin_de_partie(int* niv, Niveau niveau[], Joueur* joueur,
     blit(bg, page, 0, 0, 0, 0, LARGEUR, HAUTEUR);
 
     char str[30];
+    sprintf(str, "Niveau %d", *niv + 1);
+    textout_centre_ex(page, font, str,
+                      LARGEUR / 2, 340, makecol(255, 255, 255), -1);
     sprintf(str, "Score : %d", joueur->score);
     textout_centre_ex(page, font, str,
                       LARGEUR / 2, 400, makecol(255, 255, 255), -1);
+    sprintf(str, "%d/%d vaisseaux detruits", niveau[*niv].vaisseaux_detruits,
+            niveau[*niv].nb_vaisseaux);
+    textout_centre_ex(page, font, str,
+                      LARGEUR / 2, 430, makecol(255, 255, 255), -1);
     textout_centre_ex(page, font, "Appuyez sur Echap pour revenir au menu",
-                      LARGEUR / 2, 470, makecol(255, 255, 255), -1);
+                      LARGEUR / 2, 500, makecol(255, 255, 255), -1);
 
     blit(page, screen, 0, 0, 0, 0, LARGEUR, HAUTEUR);
 }
@@ -132,7 +139,7 @@ void afficher_decompte(int* niv, Niveau niveau[], Yoda yoda, Vador vador,
                      BITMAP* img_yoda[], BITMAP* img_vador[],
                      BITMAP* img_vaisseau[]) {
     for (int i = 3; i > 0; i--) {
-        afficher_niveau(&niv, niveau, yoda, vador, tete_vaisseau, tete_projectile,
+        afficher_niveau(niv, niveau, yoda, vador, tete_vaisseau, tete_projectile,
                          page, bg, img_yoda, img_vador, img_vaisseau);
         char str[2];
         sprintf(str, "%d", i);

@@ -7,16 +7,7 @@
 
 #define GRAVITE 0.4f 
 
-Vaisseau* vaisseau_i(Vaisseau* tete_vaisseau, int i) {
-    Vaisseau* temp = tete_vaisseau;
-    for (int j = 0; j < i && temp != NULL; j++) {
-        temp = temp->suivant;
-    }
-    return temp;
-}
-
-int bord_touche(Vaisseau* tete_vaisseau, int i) {
-    Vaisseau* vai = vaisseau_i(tete_vaisseau, i);
+int bord_touche(Vaisseau* vai) {
     if (vai == NULL) return 0;
     if (vai->x_f <= 0 || vai->x_f + vai->tx >= LARGEUR) return 1;
     if (vai->y_f <= 0 || vai->y_f + vai->ty >= HAUTEUR) return 1;
@@ -76,32 +67,36 @@ void deplacement_projectile(Projectile** tete_projectile) {
 }
 
 /* CORRECTION : verification sur X ET Y (l'original ne verifiait que X) */
-int collision_projectile_vaisseau(Projectile* tete_projectile,
-                                           Vaisseau* tete_vaisseau, int i) {
-    if (tete_projectile == NULL) return 0;
-    Vaisseau* vai = vaisseau_i(tete_vaisseau, i);
-    if (vai == NULL) return 0;
+static void supprimer_projectile(Projectile** tete_projectile, Projectile* proj) {
+    if (proj == NULL || tete_projectile == NULL) return;
+    if (proj->precedent != NULL) proj->precedent->suivant = proj->suivant;
+    else *tete_projectile = proj->suivant;
+    if (proj->suivant != NULL) proj->suivant->precedent = proj->precedent;
+    free(proj);
+}
+
+Projectile* collision_projectile_vaisseau(Projectile* tete_projectile,
+                                           Vaisseau* vai) {
+    if (tete_projectile == NULL || vai == NULL) return NULL;
     Projectile* proj = tete_projectile;
     while (proj != NULL) {
         if (proj->x >= vai->x && proj->x <= vai->x + vai->tx &&
             proj->y >= vai->y && proj->y <= vai->y + vai->ty) {
-            return 1;   /* retourne 1 si un projectile touche le vaisseau */
+            return proj;
         }
         proj = proj->suivant;
     }
-    return 0;
+    return NULL;
 }
 
-int collision_yoda_vaisseau(Yoda yoda, Vaisseau* tete_vaisseau, int i) {
-    Vaisseau* vai = vaisseau_i(tete_vaisseau, i);
+int collision_yoda_vaisseau(Yoda yoda, Vaisseau* vai) {
     if (vai == NULL) return 0;
     if (yoda.x + yoda.tx > vai->x && yoda.x < vai->x + vai->tx &&
         yoda.y + yoda.ty > vai->y && yoda.y < vai->y + vai->ty) return 1;
     return 0;
 }
 
-void rebond(Vaisseau* tete_vaisseau, int i) {
-    Vaisseau* vai = vaisseau_i(tete_vaisseau, i);
+void rebond(Vaisseau* vai) {
     if (vai == NULL) return;
 
     /* --- Sol : on repart toujours avec la meme vitesse fixe vers le haut ---
@@ -135,8 +130,7 @@ void rebond(Vaisseau* tete_vaisseau, int i) {
 
 /* CORRECTION : Vaisseau** pour pouvoir mettre a jour la tete si on supprime
    le premier noeud de la liste. */
-void division_vaisseau(Vaisseau** tete_vaisseau, int i) {
-    Vaisseau* vai = vaisseau_i(*tete_vaisseau, i);
+void division_vaisseau(Vaisseau** tete_vaisseau, Vaisseau* vai) {
     if (vai == NULL) return;
 
     if (vai->taille >= 3) {
@@ -205,7 +199,9 @@ void boucle_de_jeu(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
     afficher_niveau(niv, niveau, *yoda, *vador, *tete_vaisseau,
                     *tete_projectile, page, bg,
                     img_yoda, img_vador, img_vaisseau);
-    afficher_decompte(page, bg);
+    afficher_decompte(niv, niveau, *yoda, *vador, *tete_vaisseau,
+                      *tete_projectile, page, bg,
+                      img_yoda, img_vador, img_vaisseau);
 
     while (!fermer) {
 
@@ -214,30 +210,25 @@ void boucle_de_jeu(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
         deplacement_projectile(tete_projectile);
 
         /* CORRECTION : on parcourt la liste chainee directement plutot que
-           d'utiliser niveau[*niv].nb_vaisseaux qui ne reflete pas les divisions.
-           On sauvegarde le suivant avant toute modification de la liste. */
+           d'utiliser niveau[*niv].nb_vaisseaux qui ne reflete pas les divisions. */
         Vaisseau* vai = *tete_vaisseau;
         while (vai != NULL) {
             Vaisseau* suivant_vai = vai->suivant;
-            int idx = 0;
-            /* Trouver l'indice courant pour les fonctions qui en ont besoin */
-            Vaisseau* tmp = *tete_vaisseau;
-            while (tmp != NULL && tmp != vai) { idx++; tmp = tmp->suivant; }
 
-            if (bord_touche(*tete_vaisseau, idx)) {
-                rebond(*tete_vaisseau, idx);
+            if (bord_touche(vai)) {
+                rebond(vai);
             }
 
-            if (collision_projectile_vaisseau(*tete_projectile, *tete_vaisseau, idx) != 0) {
-                liberer_projectile(*tete_projectile); /* CORRECTION : supprimer le projectile touche */
-                *tete_projectile = NULL;
-                division_vaisseau(tete_vaisseau, idx);
+            Projectile* proj = collision_projectile_vaisseau(*tete_projectile, vai);
+            if (proj != NULL) {
+                supprimer_projectile(tete_projectile, proj);
+                division_vaisseau(tete_vaisseau, vai);
                 niveau[*niv].vaisseaux_detruits++;
                 joueur->score += 10;
                 break;
             }
 
-            if (collision_yoda_vaisseau(*yoda, *tete_vaisseau, idx)) {
+            if (collision_yoda_vaisseau(*yoda, vai)) {
                 fin_de_partie(niv, niveau, joueur, tete_vaisseau,
                               tete_projectile, page, bg);
                 return;
@@ -260,7 +251,9 @@ void boucle_de_jeu(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
             afficher_niveau(niv, niveau, *yoda, *vador, *tete_vaisseau,
                             *tete_projectile, page, bg,
                             img_yoda, img_vador, img_vaisseau);
-            afficher_decompte(page, bg);
+            afficher_decompte(niv, niveau, *yoda, *vador, *tete_vaisseau,
+                              *tete_projectile, page, bg,
+                              img_yoda, img_vador, img_vaisseau);
         }
 
         /* Saisie clavier */
@@ -279,7 +272,9 @@ void boucle_de_jeu(int* niv, Niveau niveau[], Joueur* joueur, Yoda* yoda,
         }
         if (key[KEY_P]){
             afficher_menu_pause(page, bg);
-            gestion_menu_pause(page, bg);
+            gestion_menu_pause(niv, niveau, joueur, *yoda, *vador, *tete_vaisseau,
+                               *tete_projectile, page, bg,
+                               img_yoda, img_vador, img_vaisseau);
         }
 
         /* Affichage */
