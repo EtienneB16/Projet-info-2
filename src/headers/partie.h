@@ -27,6 +27,8 @@ void fin_de_partie(int* niv, Niveau niveau[], Joueur* joueur,
                    Vaisseau** tete_vaisseau, Projectile** tete_projectile,
                    BITMAP* page, BITMAP* bg);
 
+void liberer_bg_cache(void);
+
 void sauvegarde(int* niv, Niveau niveau[], Joueur* joueur);
 void charger_sauvegarde(int* niv, Niveau niveau[], Joueur* joueur);
 

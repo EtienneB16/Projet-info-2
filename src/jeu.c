@@ -75,13 +75,30 @@ static void supprimer_projectile(Projectile** tete_projectile, Projectile* proj)
     free(proj);
 }
 
+static int circle_collision(int x1, int y1, int r1, int x2, int y2, int r2) {
+    int dx = x1 - x2;
+    int dy = y1 - y2;
+    int r = r1 + r2;
+    return dx * dx + dy * dy <= r * r;
+}
+
 Projectile* collision_projectile_vaisseau(Projectile* tete_projectile,
                                            Vaisseau* vai) {
     if (tete_projectile == NULL || vai == NULL) return NULL;
+
+    int vx = vai->x + vai->tx / 2;
+    int vy = vai->y + vai->ty / 2;
+    int vr = (vai->tx < vai->ty ? vai->tx : vai->ty) / 2;
+    if (vr > 10) vr -= 10;
+    if (vr < 4) vr = 4;
+
     Projectile* proj = tete_projectile;
     while (proj != NULL) {
-        if (proj->x >= vai->x && proj->x <= vai->x + vai->tx &&
-            proj->y >= vai->y && proj->y <= vai->y + vai->ty) {
+        int px = proj->x + proj->tx / 2;
+        int py = proj->y + proj->ty / 2;
+        int pr = (proj->tx < proj->ty ? proj->tx : proj->ty) / 2;
+        if (pr < 2) pr = 2;
+        if (circle_collision(px, py, pr, vx, vy, vr)) {
             return proj;
         }
         proj = proj->suivant;
@@ -91,9 +108,20 @@ Projectile* collision_projectile_vaisseau(Projectile* tete_projectile,
 
 int collision_yoda_vaisseau(Yoda yoda, Vaisseau* vai) {
     if (vai == NULL) return 0;
-    if (yoda.x + yoda.tx > vai->x && yoda.x < vai->x + vai->tx &&
-        yoda.y + yoda.ty > vai->y && yoda.y < vai->y + vai->ty) return 1;
-    return 0;
+
+    int yx = yoda.x + yoda.tx / 2;
+    int yy = yoda.y + yoda.ty / 2;
+    int yr = (yoda.tx < yoda.ty ? yoda.tx : yoda.ty) / 2;
+    if (yr > 12) yr -= 12;
+    if (yr < 6) yr = 6;
+
+    int vx = vai->x + vai->tx / 2;
+    int vy = vai->y + vai->ty / 2;
+    int vr = (vai->tx < vai->ty ? vai->tx : vai->ty) / 2;
+    if (vr > 10) vr -= 10;
+    if (vr < 5) vr = 5;
+
+    return circle_collision(yx, yy, yr, vx, vy, vr);
 }
 
 void rebond(Vaisseau* vai) {

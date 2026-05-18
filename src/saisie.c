@@ -5,11 +5,7 @@
 #include "headers/partie.h"
 
 int gestion_menu(BITMAP* bg, BITMAP* page) {
-    /* CORRECTION : l'original ne verifiait pas si bg est NULL avant de le
-       detruire. Au 1er appel (bg=NULL dans main) c'est un comportement
-       indefini. destroy_bitmap(NULL) est safe dans Allegro mais on garde
-       la garde explicite pour la clarte. */
-    if (bg != NULL) destroy_bitmap(bg);
+    /* Utilise le cache de backgrounds pour eviter des chargements disque repetes. */
     bg = charger_bg(0);
 
     int choix_menu = 0;
@@ -17,26 +13,24 @@ int gestion_menu(BITMAP* bg, BITMAP* page) {
         afficher_menu(bg, page);
         if (key[KEY_ESC]) {
             choix_menu = 1;
-            destroy_bitmap(bg);
             return 0;
         }
         if (mouse_b & 1) {
             if (mouse_x >= 200 && mouse_x <= 990 && mouse_y >= 200 && mouse_y <= 315) {
-                choix_menu = 1; destroy_bitmap(bg); return 1;
+                choix_menu = 1; return 1;
             }
             if (mouse_x >= 200 && mouse_x <= 990 && mouse_y >= 295 && mouse_y <= 410) {
-                choix_menu = 1; destroy_bitmap(bg); return 2;
+                choix_menu = 1; return 2;
             }
             if (mouse_x >= 200 && mouse_x <= 990 && mouse_y >= 390 && mouse_y <= 505) {
-                choix_menu = 1; destroy_bitmap(bg); return 3;
+                choix_menu = 1; return 3;
             }
             if (mouse_x >= 200 && mouse_x <= 990 && mouse_y >= 485 && mouse_y <= 590) {
-                choix_menu = 1; destroy_bitmap(bg); return 0;
+                choix_menu = 1; return 0;
             }
         }
         rest(100);
     }
-    destroy_bitmap(bg);
     return 0;
 }
 
@@ -45,7 +39,6 @@ void gestion_menu_pause(int* niv, Niveau niveau[], Joueur* joueur, Yoda yoda, Va
                      BITMAP* page, BITMAP* bg,
                      BITMAP* img_yoda[], BITMAP* img_vador[],
                      BITMAP* img_vaisseau[]) {
-    if(bg != NULL) destroy_bitmap(bg);
     bg = charger_bg(4);
     int choix_menu = 0;
     while (!choix_menu) {
@@ -71,7 +64,8 @@ void gestion_menu_pause(int* niv, Niveau niveau[], Joueur* joueur, Yoda yoda, Va
     }
 }
 
-void gestion_menu_regles(BITMAP* page, BITMAP* bg) {
+void gestion_menu_regles(BITMAP* page) {
+    BITMAP* bg = charger_bg(0);
     int choix_menu = 0;
     while (!choix_menu) {
         afficher_regles(page, bg);

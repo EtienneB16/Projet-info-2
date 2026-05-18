@@ -34,6 +34,12 @@ int main() {
     Vaisseau*    tete_vaisseau    = NULL;
     Projectile*  tete_projectile  = NULL;
 
+    /* Precharger les backgrounds pour eviter des acces disque pendant le jeu. */
+    charger_bg(0);
+    charger_bg(1);
+    charger_bg(3);
+    charger_bg(4);
+
     while (!fermer) {
         switch (gestion_menu(bg, page)) {
             case 1:
@@ -52,7 +58,7 @@ int main() {
                 /* TODO : chargement_partie() */
                 break;
             case 3:
-                gestion_menu_regles(page, bg);
+                gestion_menu_regles(page);
                 fermer = 0;
                 break;
             case 0:
@@ -65,7 +71,7 @@ int main() {
 
     /* Nettoyage final */
     destroy_bitmap(page);
-    if (bg != NULL) destroy_bitmap(bg);
+    liberer_bg_cache();
     for (int i = 0; i < NIMAGE_YODA; i++) destroy_bitmap(img_yoda[i]);
     for (int i = 0; i < NIMAGE_VADOR; i++) destroy_bitmap(img_vador[i]);
     for (int i = 0; i < NIMAGE_VAISSEAU; i++) destroy_bitmap(img_vaisseau[i]);

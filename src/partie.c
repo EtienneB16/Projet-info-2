@@ -3,6 +3,7 @@
 #include "headers/saisie.h"
 #include "headers/affichage.h"
 
+static BITMAP* bg_cache[5] = { NULL };
 volatile int fermer = 0;
 
 void fermeture() {
@@ -61,15 +62,31 @@ void initialisation_vaisseau(BITMAP *img[NIMAGE_VAISSEAU]) {
 }
 
 BITMAP* charger_bg(int i) {
+    if (i < 0 || i >= 5) {
+        allegro_message("index background invalide : %d", i);
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+    if (bg_cache[i] != NULL) return bg_cache[i];
+
     char path[255];
     sprintf(path, "src/backgrounds/bg_%d.bmp", i);
-    BITMAP* p = load_bitmap(path, NULL);
-    if (!p) {
+    bg_cache[i] = load_bitmap(path, NULL);
+    if (!bg_cache[i]) {
         allegro_message("impossible de charger %s", path);
         allegro_exit();
         exit(EXIT_FAILURE);
     }
-    return p;
+    return bg_cache[i];
+}
+
+void liberer_bg_cache(void) {
+    for (int i = 0; i < 5; i++) {
+        if (bg_cache[i] != NULL) {
+            destroy_bitmap(bg_cache[i]);
+            bg_cache[i] = NULL;
+        }
+    }
 }
 
 /* CORRECTION : Vaisseau** pour que la tete soit modifiee chez l'appelant */
@@ -218,7 +235,6 @@ void fin_de_partie(int* niv, Niveau niveau[], Joueur* joueur,
         rest(100);
     }
 
-    destroy_bitmap(fin_bg);
 }
 
 
